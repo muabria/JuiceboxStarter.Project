@@ -1,7 +1,7 @@
 {
   "name": "improve-juicebox-starter",
   "version": "1.0.0",
-  "description": "",
+  "description": "For this project, you will be recreating the Juicebox API from scratch with the new technologies you've learned. You may structure your project as you wish as long as you meet the requirements. Feel free to use one of the previous workshop solutions as reference! Before you start, make sure to read through the rubric to get a sense of what you will be required to do.",
   "main": "index.js",
   "scripts": {
     "server:dev": "nodemon src/server/index.js -w src/server",
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.5.2",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.1.0",
     "nodemon": "^3.0.1",
+    "prisma": "^5.5.2",
     "vite": "^4.5.0"
   }
 }
