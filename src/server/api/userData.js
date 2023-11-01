@@ -17,7 +17,7 @@ userRouter.get("/", async (req, res, next) => {
 // Get a user by id
 userRouter.get("/:id", async (req, res, next) => {
     try {
-        const users = await db.users.findUnique({
+        const users = await prisma.users.findUnique({
             where: { id: +req.params.id },
         });
 
@@ -31,7 +31,7 @@ userRouter.get("/:id", async (req, res, next) => {
 // Create a new users
 userRouter.post("/", async (req, res, next) => {
     try {
-        const users = await db.users.create({
+        const users = await prisma.users.create({
             data: { ...req.body, instructor: { connect: { id: req.user.id } } },
         });
         res.status(201).send(users);
@@ -39,12 +39,12 @@ userRouter.post("/", async (req, res, next) => {
         next({ name, message });
     }
 });
+
+
 // POST: register 
-
-
 userRouter.post('/register', async (req, res, next) => {
     const { username, password, name, location } = req.body;
-    const hashedPassword = await bcrypt.hash(password, SALT_COUNT)
+    // const hashedPassword = await bcrypt.hash(password, SALT_COUNT)
 
 
     try {
