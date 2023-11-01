@@ -44,7 +44,7 @@ userRouter.post("/", async (req, res, next) => {
 // POST: register 
 userRouter.post('/register', async (req, res, next) => {
     const { username, password, name, location } = req.body;
-    // const hashedPassword = await bcrypt.hash(password, SALT_COUNT)
+     const hashedPassword = await bcrypt.hash(password, SALT_COUNT)
 
 
     try {
@@ -93,6 +93,56 @@ userRouter.post('/register', async (req, res, next) => {
         }
     } catch ({ name, message }) {
         next({ name, message });
+    }
+});
+
+usersRouter.post('/login', async (req, res, next) => {
+    const { username, password } = req.body;
+
+    // request must have both
+    if (!username || !password) {
+        next({
+            name: "MissingCredentialsError",
+            message: "Please supply both a username and password"
+        });
+    }
+
+    try {
+        const user = await prisma.users.findUnique({
+            where:{
+                username: `${username}`
+            }
+        });
+
+        if (!user) {
+            next({
+              name: 'IncorrectCredentialsError',
+              message: 'Username or password is incorrect'
+            });
+          } else {
+            const hashedPassword= user.password;
+
+            const passwordsMatch= await bcrypt.compare(password,hashedPassword);
+    
+            if(!passwordsMatch) return;
+    
+            const token = jwt.sign({
+                id: user.id,
+                username
+            }, JWT_SECRET, {
+                expiresIn: '1w'
+            });
+            delete user.password;
+
+            res.send({
+                user,
+                message: "you're logged in!",
+                token
+            });
+        } 
+    } catch (error) {
+        console.log(error);
+        next(error);
     }
 });
 
