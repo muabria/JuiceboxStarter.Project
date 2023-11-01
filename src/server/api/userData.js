@@ -1,9 +1,16 @@
 const express = require('express');
-const userRouter = require("express").Router();
+const usersRouter = require("express").Router();
 const prisma = require("../client")
 
+const jwt = require('jsonwebtoken');
+
+const { JWT_SECRET } = process.env
+
+const bcrypt = require('bcrypt');
+const SALT_COUNT = 10;
+
 // Get all users
-userRouter.get("/", async (req, res, next) => {
+usersRouter.get("/", async (req, res, next) => {
     try {
         const users = await prisma.users.findMany();
         users.forEach(user => delete user.password),
@@ -15,7 +22,7 @@ userRouter.get("/", async (req, res, next) => {
 });
 
 // Get a user by id
-userRouter.get("/:id", async (req, res, next) => {
+usersRouter.get("/:id", async (req, res, next) => {
     try {
         const users = await prisma.users.findUnique({
             where: { id: +req.params.id },
@@ -29,7 +36,7 @@ userRouter.get("/:id", async (req, res, next) => {
 
 
 // Create a new users
-userRouter.post("/", async (req, res, next) => {
+usersRouter.post("/", async (req, res, next) => {
     try {
         const users = await prisma.users.create({
             data: { ...req.body, instructor: { connect: { id: req.user.id } } },
@@ -42,19 +49,19 @@ userRouter.post("/", async (req, res, next) => {
 
 
 // POST: register 
-userRouter.post('/register', async (req, res, next) => {
+usersRouter.post('/register', async (req, res, next) => {
     const { username, password, name, location } = req.body;
      const hashedPassword = await bcrypt.hash(password, SALT_COUNT)
 
 
     try {
-        const usersR = await prisma.users.findUnique({
+        const users = await prisma.users.findUnique({
             where: {
                 username: username
             }
         });
 
-        if (usersR) {
+        if (users) {
             next({
                 name: 'UserExistsError',
                 message: 'A user by that username already exists'
@@ -147,4 +154,4 @@ usersRouter.post('/login', async (req, res, next) => {
 });
 
 
-module.exports = userRouter;
+module.exports = usersRouter;
