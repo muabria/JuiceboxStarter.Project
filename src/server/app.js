@@ -20,6 +20,20 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../dist/index.html'));
 })
 
+
+app.use('/api', require('./api'));
+// app.use('/auth', require('./auth'));
+
+
+app.use((req, res, next) => {
+  console.log("<____JuiceBoxSTART____>");
+  console.log(req.body);
+  console.log("<_____JuiceBoxEND_____>");
+
+  next();
+});
+
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

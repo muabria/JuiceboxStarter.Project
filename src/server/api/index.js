@@ -2,7 +2,7 @@ const express = require('express');
 const apiRouter = express.Router();
 
 const jwt = require('jsonwebtoken');
-const prisma = require('../db/prisma');
+const prisma = require('../client');
 const { JWT_SECRET } = process.env;
 
 
@@ -20,7 +20,7 @@ apiRouter.use(async (req, res, next) => {
             const { id } = jwt.verify(token, JWT_SECRET);
 
             if (id) {
-                req.user = await prisma.users.findUnique({where:{id:id}});
+                req.user = await prisma.users.findUnique({where:{id: users.id}});
                 next();
             } else {
                 next({
@@ -49,10 +49,10 @@ apiRouter.use((req, res, next) => {
 
 
 
-const usersRouter = require('./users');
+const usersRouter = require('./userData');
 apiRouter.use('/users', usersRouter);
 
-const postsRouter = require('./posts');
+const postsRouter = require('./post');
 apiRouter.use('/posts', postsRouter);
 
 const tagsRouter = require('./tags');
