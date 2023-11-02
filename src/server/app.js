@@ -20,8 +20,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../dist/index.html'));
 })
 
-
-app.use('/api', require('./api'));
+const apiRouter = require("../server/api");
+app.use('/api', apiRouter);
 // app.use('/auth', require('./auth'));
 
 
