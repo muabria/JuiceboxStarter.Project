@@ -20,9 +20,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../dist/index.html'));
 })
 
-const apiRouter = require("../server/api");
-app.use('/api', apiRouter);
-// app.use('/auth', require('./auth'));
 
 
 app.use((req, res, next) => {
@@ -32,6 +29,10 @@ app.use((req, res, next) => {
 
   next();
 });
+
+const apiRouter = require("../server/api");
+app.use('/api', apiRouter);
+// app.use('/auth', require('./auth'));
 
 
 // Error handling middleware
